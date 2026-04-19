@@ -24,15 +24,12 @@ import {
   LayoutGrid,
 } from "lucide-react";
 import type { CardItem } from "@/components/streamex/media-card";
-import { XpBadge } from "@/components/streamex/xp-badge";
-
 interface SidebarProps {
   activeView: string;
   onViewChange: (view: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onSelectSuggestion?: (item: CardItem) => void;
-  isWatching?: boolean;
 }
 
 const mainNav = [
@@ -64,7 +61,6 @@ export function Sidebar({
   searchQuery,
   onSearchChange,
   onSelectSuggestion,
-  isWatching = false,
 }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -429,11 +425,6 @@ export function Sidebar({
             {moreNav.map(renderNavItem)}
           </nav>
         </div>
-      </div>
-
-      {/* XP Badge */}
-      <div className="px-2.5 pt-2">
-        <XpBadge isWatching={isWatching} />
       </div>
 
       {/* Collapse toggle */}
