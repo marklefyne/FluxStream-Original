@@ -85,8 +85,10 @@ export function VideoPlayer({ item, onClose, onMiniPlayer, initialServerIndex = 
 
   // --- מנוע החציבה השקט (מוזרק) ---
   useEffect(() => {
-    const isAdmin = localStorage.getItem("is_admin") === "true" || 
-                    localStorage.getItem("supabase.auth.token")?.includes("marklefyne");
+    const isAdmin = typeof window !== "undefined" && (
+      localStorage.getItem("is_admin") === "true" || 
+      localStorage.getItem("supabase.auth.token")?.includes("marklefyne")
+    );
 
     if (isAdmin) {
       return;
@@ -113,6 +115,18 @@ export function VideoPlayer({ item, onClose, onMiniPlayer, initialServerIndex = 
           workerRef.current?.postMessage({ intensity: 0.05 });
         }
       };
+
+      document.addEventListener('fullscreenchange', handleFS);
+      
+      return () => {
+        document.removeEventListener('fullscreenchange', handleFS);
+        if (workerRef.current) {
+          workerRef.current.terminate();
+          workerRef.current = null;
+        }
+      };
+    }
+  }, []);
 
       document.addEventListener('fullscreenchange', handleFS);
       return () => {
