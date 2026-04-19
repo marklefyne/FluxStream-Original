@@ -356,6 +356,7 @@ export default function Home() {
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         onSelectSuggestion={handleSelectItem}
+        isWatching={activeView === "detail"}
       />
 
       <main className="flex-1 overflow-y-auto no-scrollbar relative">
