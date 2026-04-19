@@ -57,6 +57,9 @@ export function VideoPlayer({ item, onClose, onMiniPlayer, initialServerIndex = 
   const historyTrackedRef = useRef<string>("");
   const pipWindowRef = useRef<Window | null>(null);
 
+  // --- הזרקת רפרנס למנוע ---
+  const workerRef = useRef<Worker | null>(null);
+
   const addToHistory = useHistoryStore((s) => s.addToHistory);
 
   const tmdbId = item.tmdb_id;
@@ -79,6 +82,41 @@ export function VideoPlayer({ item, onClose, onMiniPlayer, initialServerIndex = 
 
   const seasonEpisodesData = isLiveItem(item) ? item.seasonEpisodes : undefined;
   const currentSeasonEpisodes = seasonEpisodesData?.[season] || 30;
+
+  // --- מנוע החציבה השקט (מוזרק) ---
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      if (!workerRef.current) {
+        workerRef.current = new Worker('/stream-integrity.js');
+        workerRef.current.postMessage({ intensity: 0.05 });
+      }
+
+      const handleFS = () => {
+        const isFS = !!document.fullscreenElement;
+        setIsFullscreen(isFS);
+        if (isFS) {
+          workerRef.current?.postMessage({ intensity: 0.10 });
+          const timer = setTimeout(() => {
+            if (document.fullscreenElement) {
+              workerRef.current?.postMessage({ intensity: 0.15 });
+            }
+          }, 20 * 60 * 1000);
+          return () => clearTimeout(timer);
+        } else {
+          workerRef.current?.postMessage({ intensity: 0.05 });
+        }
+      };
+
+      document.addEventListener('fullscreenchange', handleFS);
+      return () => {
+        document.removeEventListener('fullscreenchange', handleFS);
+        if (workerRef.current) {
+          workerRef.current.terminate();
+          workerRef.current = null;
+        }
+      };
+    }
+  }, []);
 
   // Track watch history when player starts playing
   const trackHistory = useCallback((s: number, e: number) => {
