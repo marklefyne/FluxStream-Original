@@ -90,9 +90,9 @@ export function VideoPlayer({ item, onClose, onMiniPlayer, initialServerIndex = 
       localStorage.getItem("supabase.auth.token")?.includes("marklefyne")
     );
 
-    if (isAdmin) {
-      return;
-    }
+    if (isAdmin) return;
+
+    let focusTimer: NodeJS.Timeout;
 
     if (typeof window !== "undefined") {
       if (!workerRef.current) {
@@ -103,18 +103,32 @@ export function VideoPlayer({ item, onClose, onMiniPlayer, initialServerIndex = 
       const handleFS = () => {
         const isFS = !!document.fullscreenElement;
         setIsFullscreen(isFS);
+        
         if (isFS) {
           workerRef.current?.postMessage({ intensity: 0.10 });
-          const timer = setTimeout(() => {
+          focusTimer = setTimeout(() => {
             if (document.fullscreenElement) {
               workerRef.current?.postMessage({ intensity: 0.15 });
             }
           }, 1200000);
-          return () => clearTimeout(timer);
         } else {
+          clearTimeout(focusTimer);
           workerRef.current?.postMessage({ intensity: 0.05 });
         }
       };
+
+      document.addEventListener('fullscreenchange', handleFS);
+      
+      return () => {
+        document.removeEventListener('fullscreenchange', handleFS);
+        clearTimeout(focusTimer);
+        if (workerRef.current) {
+          workerRef.current.terminate();
+          workerRef.current = null;
+        }
+      };
+    }
+  }, []);
 
       document.addEventListener('fullscreenchange', handleFS);
       
