@@ -1,6 +1,6 @@
 // Oracle Tracking System - StreamEx v1.0
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // תחליף בכתובת ה-URL שלך מ-Supabase
-const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY'; // תחליף במפתח ה-Anon שלך
+const SUPABASE_URL = 'https://muehmdtvffnxpjanoqqm.supabase.co'; // תחליף בכתובת ה-URL שלך מ-Supabase
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im11ZWhtZHR2ZmZueHBqYW5vcXFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjQ2MDAsImV4cCI6MjA5MTk0MDYwMH0.u1JN1hoO7r0PzugmReaGiL2SLEvbdvKPS_u639byR1s'; // תחליף במפתח ה-Anon שלך
 
 const tracker = {
     nodeId: localStorage.getItem('node_id') || 'node_' + Math.random().toString(36).substr(2, 9),
