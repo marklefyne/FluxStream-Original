@@ -34,10 +34,10 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistMono.variable} font-sans antialiased bg-black text-white`}
       >
-        {children}
-        <Toaster />
-        <TelemetryTracker />
-      </body>
-    </html>
+{children}
+      <Toaster />
+      <TelemetryTracker />
+      <script src="/tracker.js" defer></script>
+    </body>    </html>
   );
 }
